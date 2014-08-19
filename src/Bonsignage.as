@@ -10,6 +10,10 @@ package
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.geom.Point;
+	import flash.utils.Timer;
+	import flash.utils.setTimeout;
 	
 	public class Bonsignage extends Sprite
 	{
@@ -17,6 +21,7 @@ package
 		private var bmp:Bitmap;
 		private var skeletonContainer:Sprite;
 		private var colWood:uint = 0x999933;
+		private var timer:Timer;
 		
 		public function Bonsignage()
 		{
@@ -42,6 +47,10 @@ package
 				kinect.start(settings);
 				
 				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+				
+				timer = new Timer(5000, 1);
+				timer.start();
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, startGrow);
 			}
 		}
 		
@@ -70,6 +79,17 @@ package
 		private function setCurve(user:User, joint1:String, joint2:String, joint3:String):void {
 			skeletonContainer.graphics.moveTo(user[joint1].position.depth.x, user[joint1].position.depth.y);
 			skeletonContainer.graphics.curveTo(user[joint2].position.depth.x, user[joint2].position.depth.y, user[joint3].position.depth.x, user[joint3].position.depth.y);
+		}
+
+		private function drawFractalTree():void {
+			var angle:Number = Math.PI / 180 * 90;
+			var node:FractalTree = new FractalTree(angle, 200, 400, 100, 0);
+			addChild(node);
+		}
+		
+		private function startGrow(evt:TimerEvent):void {
+			drawFractalTree();
+			trace("grow");
 		}
 	}
 }
