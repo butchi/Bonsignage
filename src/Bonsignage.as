@@ -29,6 +29,7 @@ package
 		private var nodeE:Point; // 左手
 		private var nodeF:Point; // 右手
 		private var nodeScale:Number = 0.3; // 葉の大きさ		
+		private var nodeList:Array = [];
 		
 		public function Bonsignage()
 		{
@@ -109,6 +110,7 @@ package
 				var x:Number = p.x + (Math.random()-0.5)*10;
 				var y:Number = p.y + (Math.random()-0.5)*10;
 				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeC.subtract(nodeB).length, 0);
+				nodeList.push(node);
 				addChild(node);
 			}
 			for(var i = 0; i < len; i++) {
@@ -118,6 +120,7 @@ package
 				var x:Number = p.x + (Math.random()-0.5)*10;
 				var y:Number = p.y + (Math.random()-0.5)*10;
 				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeD.subtract(nodeB).length, 0);
+				nodeList.push(node);
 				addChild(node);
 			}
 			for(var i = 0; i < len; i++) {
@@ -127,6 +130,7 @@ package
 				var x:Number = p.x + (Math.random()-0.5)*10;
 				var y:Number = p.y + (Math.random()-0.5)*10;
 				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeE.subtract(nodeC).length, 0);
+				nodeList.push(node);
 				addChild(node);
 			}
 			for(var i = 0; i < len; i++) {
@@ -136,8 +140,19 @@ package
 				var x:Number = p.x + (Math.random()-0.5)*10;
 				var y:Number = p.y + (Math.random()-0.5)*10;
 				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeF.subtract(nodeD).length, 0);
+				nodeList.push(node);
 				addChild(node);
 			}
+
+			removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+			setTimeout(function() {
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+				for(i = 0; i < nodeList.length; i++) {
+					removeChild(nodeList[i]);
+				}
+				nodeList = [];
+			}, 3000);
 		}
 		
 		private function startGrow(evt:TimerEvent):void {
