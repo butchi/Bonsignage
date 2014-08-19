@@ -7,12 +7,14 @@ package
 	{
 		private var colLeaf:uint = 0x009933;
 		private const MAXSTEPS:Number = 5;
-		private const angleLeft:Number = Math.PI/180*20;
-		private const angleRight:Number = Math.PI/180*50;
 		private const lengthMult:Number = 0.7;
+		private var angleLeft:Number;
+		private var angleRight:Number;
 
-		public function FractalTree(angle:Number, x:Number, y:Number, length:Number, count:Number = 0)
+		public function FractalTree(angle:Number, angleLeft:Number, angleRight:Number, x:Number, y:Number, length:Number, count:Number = 0)
 		{
+			this.angleLeft = angleLeft;
+			this.angleRight = angleRight;
 			drawPiece(angle, x, y, length, count);
 		}
 
@@ -25,13 +27,13 @@ package
 				var newX:Number = x - Math.cos(angle) * length;
 				var newY:Number = y - Math.sin(angle) * length;
 				
-				graphics.lineStyle(0, colLeaf);
+				graphics.lineStyle(3, colLeaf);
 				graphics.moveTo(x, y);
 				graphics.lineTo(newX, newY);
 				
 				setTimeout(function():void {
 					drawPiece(angle + angleRight, newX, newY, newLength, count + 1);
-					drawPiece(angle - angleLeft, newX, newY, newLength, count + 1);
+					drawPiece(angle + angleLeft, newX, newY, newLength, count + 1);
 				}, 200);
 			}
 		}

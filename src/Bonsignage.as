@@ -22,6 +22,13 @@ package
 		private var skeletonContainer:Sprite;
 		private var colWood:uint = 0x999933;
 		private var timer:Timer;
+		private var nodeA:Point; // 左足
+		private var nodeB:Point; // 首
+		private var nodeC:Point; // 左肘
+		private var nodeD:Point; // 右肘
+		private var nodeE:Point; // 左手
+		private var nodeF:Point; // 右手
+		private var nodeScale:Number = 0.3; // 葉の大きさ		
 		
 		public function Bonsignage()
 		{
@@ -48,9 +55,9 @@ package
 				
 				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 				
-				timer = new Timer(5000, 1);
+				timer = new Timer(10000, 99);
 				timer.start();
-				timer.addEventListener(TimerEvent.TIMER_COMPLETE, startGrow);
+				timer.addEventListener(TimerEvent.TIMER, startGrow);
 			}
 		}
 		
@@ -61,6 +68,13 @@ package
 		private function enterFrameHandler(evt:Event):void {
 			skeletonContainer.graphics.clear();
 			for each(var user:User in kinect.usersWithSkeleton) {
+				nodeA = user.leftFoot.position.depth;
+				nodeB = user.neck.position.depth;
+				nodeC = user.leftElbow.position.depth;
+				nodeD = user.rightElbow.position.depth;
+				nodeE = user.leftHand.position.depth;
+				nodeF = user.rightHand.position.depth;
+				
 				skeletonContainer.graphics.lineStyle(50, colWood);
 				setCurve(user, "leftFoot", "leftHip", "neck");
 				skeletonContainer.graphics.lineStyle(30, colWood);
@@ -82,14 +96,61 @@ package
 		}
 
 		private function drawFractalTree():void {
-			var angle:Number = Math.PI / 180 * 90;
-			var node:FractalTree = new FractalTree(angle, 200, 400, 100, 0);
-			addChild(node);
+			var i:int;
+			var len:int = 10;
+			var angleLeft:Number = pointAngle(nodeB, nodeC);
+			var angleRight:Number = pointAngle(nodeB, nodeD);
+			var node:FractalTree;
+			trace(angleLeft, angleRight);
+			for(var i = 0; i < len; i++) {
+				var angle:Number = pointAngle(nodeB, nodeC) - Math.PI/2;
+				var p:Point = Point.interpolate(nodeB, nodeC, i/len);
+				var rndRot:Number = Math.random()*Math.PI*2*0.5;
+				var x:Number = p.x + (Math.random()-0.5)*10;
+				var y:Number = p.y + (Math.random()-0.5)*10;
+				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeC.subtract(nodeB).length, 0);
+				addChild(node);
+			}
+			for(var i = 0; i < len; i++) {
+				var angle:Number = pointAngle(nodeB, nodeD) - Math.PI/2;
+				var p:Point = Point.interpolate(nodeB, nodeD, i/len);
+				var rndRot:Number = Math.random()*Math.PI*2*0.5;
+				var x:Number = p.x + (Math.random()-0.5)*10;
+				var y:Number = p.y + (Math.random()-0.5)*10;
+				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeD.subtract(nodeB).length, 0);
+				addChild(node);
+			}
+			for(var i = 0; i < len; i++) {
+				var angle:Number = pointAngle(nodeB, nodeC) - Math.PI/2;
+				var p:Point = Point.interpolate(nodeC, nodeE, i/len);
+				var rndRot:Number = Math.random()*Math.PI*2*0.5;
+				var x:Number = p.x + (Math.random()-0.5)*10;
+				var y:Number = p.y + (Math.random()-0.5)*10;
+				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeE.subtract(nodeC).length, 0);
+				addChild(node);
+			}
+			for(var i = 0; i < len; i++) {
+				var angle:Number = pointAngle(nodeB, nodeC) - Math.PI/2;
+				var p:Point = Point.interpolate(nodeD, nodeF, i/len);
+				var rndRot:Number = Math.random()*Math.PI*2*0.5;
+				var x:Number = p.x + (Math.random()-0.5)*10;
+				var y:Number = p.y + (Math.random()-0.5)*10;
+				node = new FractalTree(angle+rndRot, angleLeft, angleRight, x, y, nodeScale*nodeF.subtract(nodeD).length, 0);
+				addChild(node);
+			}
 		}
 		
 		private function startGrow(evt:TimerEvent):void {
-			drawFractalTree();
-			trace("grow");
+			if(nodeA && nodeB && nodeC && nodeD && nodeE && nodeF) {
+				drawFractalTree();
+			} else {
+				trace("not detected");
+			}
+		}
+		
+		private function pointAngle(p1:Point, p2:Point):Number {
+			var v:Point = p2.subtract(p1);
+			return Math.atan2(v.y, v.x);
 		}
 	}
 }
