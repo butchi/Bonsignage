@@ -53,8 +53,7 @@ package
 			skeletonContainer.graphics.clear();
 			for each(var user:User in kinect.usersWithSkeleton) {
 				skeletonContainer.graphics.lineStyle(50, colWood);
-				setLine(user, "leftFoot", "leftHip");
-				setLine(user, "leftHip", "neck");
+				setCurve(user, "leftFoot", "leftHip", "neck");
 				skeletonContainer.graphics.lineStyle(30, colWood);
 				setLine(user, "neck", "leftElbow");
 				setLine(user, "leftElbow", "leftHand");
@@ -66,6 +65,11 @@ package
 		private function setLine(user:User, joint1:String, joint2:String):void {
 			skeletonContainer.graphics.moveTo(user[joint1].position.depth.x, user[joint1].position.depth.y);
 			skeletonContainer.graphics.lineTo(user[joint2].position.depth.x, user[joint2].position.depth.y);
+		}
+
+		private function setCurve(user:User, joint1:String, joint2:String, joint3:String):void {
+			skeletonContainer.graphics.moveTo(user[joint1].position.depth.x, user[joint1].position.depth.y);
+			skeletonContainer.graphics.curveTo(user[joint2].position.depth.x, user[joint2].position.depth.y, user[joint3].position.depth.x, user[joint3].position.depth.y);
 		}
 	}
 }
