@@ -16,6 +16,7 @@ package
 		private var kinect:Kinect;
 		private var bmp:Bitmap;
 		private var skeletonContainer:Sprite;
+		private var colWood:uint = 0x999933;
 		
 		public function Bonsignage()
 		{
@@ -47,16 +48,23 @@ package
 		private function depthImageHandler(evt:CameraImageEvent):void {
 			bmp.bitmapData = evt.imageData;
 		}
-
+		
 		private function enterFrameHandler(evt:Event):void {
 			skeletonContainer.graphics.clear();
 			for each(var user:User in kinect.usersWithSkeleton) {
-				for each(var joint:SkeletonJoint in user.skeletonJoints) {
-					skeletonContainer.graphics.beginFill(0xff0000);
-					skeletonContainer.graphics.drawCircle(joint.position.depth.x, joint.position.depth.y, 3);
-					skeletonContainer.graphics.endFill();
-				}
+				skeletonContainer.graphics.lineStyle(50, colWood);
+				setLine(user, "leftFoot", "neck");
+				skeletonContainer.graphics.lineStyle(30, colWood);
+				setLine(user, "neck", "leftElbow");
+				setLine(user, "leftElbow", "leftHand");
+				setLine(user, "neck", "rightElbow");
+				setLine(user, "rightElbow", "rightHand");
 			}
+		}
+		
+		private function setLine(user:User, joint1:String, joint2:String):void {
+			skeletonContainer.graphics.moveTo(user[joint1].position.depth.x, user[joint1].position.depth.y);
+			skeletonContainer.graphics.lineTo(user[joint2].position.depth.x, user[joint2].position.depth.y);
 		}
 	}
 }
