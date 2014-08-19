@@ -53,7 +53,8 @@ package
 			skeletonContainer.graphics.clear();
 			for each(var user:User in kinect.usersWithSkeleton) {
 				skeletonContainer.graphics.lineStyle(50, colWood);
-				setLine(user, "leftFoot", "neck");
+				setLine(user, "leftFoot", "leftHip");
+				setLine(user, "leftHip", "neck");
 				skeletonContainer.graphics.lineStyle(30, colWood);
 				setLine(user, "neck", "leftElbow");
 				setLine(user, "leftElbow", "leftHand");
