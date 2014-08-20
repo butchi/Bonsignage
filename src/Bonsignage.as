@@ -102,7 +102,6 @@ package
 			var angleLeft:Number = pointAngle(nodeB, nodeC);
 			var angleRight:Number = pointAngle(nodeB, nodeD);
 			var node:FractalTree;
-			trace(angleLeft, angleRight);
 			for(var i = 0; i < len; i++) {
 				var angle:Number = pointAngle(nodeB, nodeC) - Math.PI/2;
 				var p:Point = Point.interpolate(nodeB, nodeC, i/len);
